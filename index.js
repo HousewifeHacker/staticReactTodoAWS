@@ -1,13 +1,94 @@
 window.onload = function() {
 
     var e = React.createElement;
-
-    function TodoList() {
-        return e('p', null, 'Hi');
+    var assign = function() {
+        var result = {};
+        for (var i=0; i<arguments.length; i++) {
+            for (key in arguments[i]) {
+                result[key] = arguments[i][key];
+            };
+        };
+        return result;
     }
 
+    var TodoApp = createReactClass({
+
+        getInitialState: function() {
+            return ({
+                todos: [],
+                editing: '',
+                currentId: 0,
+            })
+        },
+
+        addTodo: function() {
+            var newTodo = this.state.editing;
+            var currentId = this.state.currentId;
+            if (newTodo) {
+                this.setState({
+                    todos: this.state.todos.concat({
+                        id: currentId,
+                        text: newTodo,
+                        isCompleted: false,
+                    }),
+                    editing: '',
+                    currentId: currentId + 1
+                });
+            }
+        },
+
+        toggleTodo: function(e) {
+            var todos = this.state.todos;
+            var todoId = e.currentTarget.getAttribute('todoid');
+            function findTodo(todo) {return todo.id === parseInt(todoId)};
+            var todoIdx = todos.findIndex( findTodo );
+            var oldTodoIsCompleted = todos[todoIdx]['isCompleted'];
+            var newTodo = assign(todos[todoIdx], {'isCompleted': !oldTodoIsCompleted});
+            this.setState({
+                todos: todos.map( function(todo, idx) {
+                    if( idx === todoIdx ) {
+                        return newTodo;
+                    }
+                    return todo;
+                })
+            });
+        },
+
+        handleInput: function(e) {
+            this.setState({editing: e.target.value});
+        },
+
+        render: function() {
+            var toggleTodo = this.toggleTodo;
+            return e('div', null,
+                e('input', {value:this.state.editing, onChange: this.handleInput}),
+                e('a', {href: '#' ,onClick: this.addTodo}, '+ Add'),
+                e('ul', null,
+                    this.state.todos.map(function(todo){
+                        return e(TodoItem, {
+                            key: todo.id,
+                            todoId: todo.id,
+                            text: todo.text,
+                            isCompleted: todo.isCompleted,
+                            handleClick: toggleTodo,
+                        });
+                    })
+                )
+            );
+        }
+    });
+
+    var TodoItem = createReactClass({
+        render: function() {
+            var todoProps = {todoid: this.props.todoId, href: '#', onClick: this.props.handleClick};
+            var text = this.props.isCompleted ? e('strike', null, this.props.text) : this.props.text;
+            //var elType = this.props.isCompleted ? 'strike' : 'span';
+            return e('li', todoProps, text);
+        }
+    });
+
     ReactDOM.render(
-        e(TodoList, null),
+        e(TodoApp, null),
         document.getElementById('app')
     );
 
