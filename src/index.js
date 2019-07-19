@@ -1,27 +1,13 @@
 window.onload = function() {
 
-    var e = React.createElement;
-    var assign = function() {
-        var result = {};
-        for (var i=0; i<arguments.length; i++) {
-            for (key in arguments[i]) {
-                result[key] = arguments[i][key];
-            };
+    class TodoApp extends React.Component {
+        state = {
+            todos: [],
+            editing: '',
+            currentId: 0,
         };
-        return result;
-    }
 
-    var TodoApp = createReactClass({
-
-        getInitialState: function() {
-            return ({
-                todos: [],
-                editing: '',
-                currentId: 0,
-            })
-        },
-
-        addTodo: function() {
+        addTodo = () => {
             var newTodo = this.state.editing;
             var currentId = this.state.currentId;
             if (newTodo) {
@@ -35,15 +21,15 @@ window.onload = function() {
                     currentId: currentId + 1
                 });
             }
-        },
+        };
 
-        handleKeyDown: function(e) {
+        handleKeyDown = (e) => {
             if (e.key === 'Enter') {
                 this.addTodo();
             }
-        },
+        };
 
-        toggleTodo: function(e) {
+        toggleTodo = (e) => {
             var todos = this.state.todos;
             var todoId = e.currentTarget.getAttribute('todoid');
             this.setState({
@@ -58,44 +44,49 @@ window.onload = function() {
                     return todo;
                 })
             });
-        },
+        };
 
-        handleInput: function(e) {
+        handleInput = (e) => {
             this.setState({editing: e.target.value});
-        },
+        };
 
-        render: function() {
+        render() {
             var toggleTodo = this.toggleTodo;
-            return e('div', null,
-                e('h2', null, 'To Do'),
-                e('input', {value:this.state.editing, onChange: this.handleInput, onKeyDown: this.handleKeyDown}),
-                e('a', {href: '#' ,onClick: this.addTodo}, '+ Add'),
-                e('ul', null,
-                    this.state.todos.map(function(todo){
-                        return e(TodoItem, {
-                            key: todo.id,
-                            todoId: todo.id,
-                            text: todo.text,
-                            isCompleted: todo.isCompleted,
-                            handleClick: toggleTodo,
-                        });
-                    })
+            var todoElems =  this.state.todos.map( (todo) => {
+                return (
+                    < TodoItem
+                         key = {todo.id}
+                         todoId = {todo.id}
+                         text = {todo.text}
+                         isCompleted = {todo.isCompleted}
+                         handleClick = {toggleTodo}
+                    />
                 )
+            });
+            return (
+                <div>
+                    <h2>To Do</h2>
+                    <input value={this.state.editing} onChange={this.handleInput} onKeyDown={this.handleKeyDown} />
+                    <a href='#' onClick={this.addTodo}>+ Add</a>
+                    <ul>
+                        {todoElems}
+                    </ul>
+                </div>
             );
         }
-    });
+    }
 
-    var TodoItem = createReactClass({
-        render: function() {
-            var todoProps = {todoid: this.props.todoId, href: '#', onClick: this.props.handleClick};
-            var text = this.props.isCompleted ? e('strike', null, this.props.text) : this.props.text;
-            //var elType = this.props.isCompleted ? 'strike' : 'span';
-            return e('li', todoProps, text);
-        }
-    });
+    var TodoItem = (props) => {
+        var text = props.isCompleted ? <strike>{props.text}</strike> : props.text;
+        return (
+            <li todoid={props.todoId} onClick={props.handleClick} href="#">
+                {text}
+            </li>
+        )
+    };
 
     ReactDOM.render(
-        e(TodoApp, null),
+        <TodoApp />,
         document.getElementById('app')
     );
 
