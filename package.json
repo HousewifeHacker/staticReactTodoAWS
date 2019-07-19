@@ -11,10 +11,12 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.6",
+    "prettier": "^1.18.2",
     "webpack": "^4.36.1",
     "webpack-cli": "^3.3.6"
   },
   "scripts": {
-    "build": "webpack --mode production"
+      "build": "webpack --mode production",
+      "pretty": "prettier --write 'src/*.js'"
   }
 }
