@@ -67,6 +67,7 @@ window.onload = function() {
         render: function() {
             var toggleTodo = this.toggleTodo;
             return e('div', null,
+                e('h2', null, 'To Do'),
                 e('input', {value:this.state.editing, onChange: this.handleInput, onKeyDown: this.handleKeyDown}),
                 e('a', {href: '#' ,onClick: this.addTodo}, '+ Add'),
                 e('ul', null,
