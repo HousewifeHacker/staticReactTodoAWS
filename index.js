@@ -37,17 +37,23 @@ window.onload = function() {
             }
         },
 
+        handleKeyDown: function(e) {
+            if (e.key === 'Enter') {
+                this.addTodo();
+            }
+        },
+
         toggleTodo: function(e) {
             var todos = this.state.todos;
             var todoId = e.currentTarget.getAttribute('todoid');
-            function findTodo(todo) {return todo.id === parseInt(todoId)};
-            var todoIdx = todos.findIndex( findTodo );
-            var oldTodoIsCompleted = todos[todoIdx]['isCompleted'];
-            var newTodo = assign(todos[todoIdx], {'isCompleted': !oldTodoIsCompleted});
             this.setState({
                 todos: todos.map( function(todo, idx) {
-                    if( idx === todoIdx ) {
-                        return newTodo;
+                    if( idx === parseInt(todoId) ) {
+                        return {
+                            id: todo.id,
+                            text: todo.text,
+                            isCompleted: !todo.isCompleted,
+                        };
                     }
                     return todo;
                 })
@@ -61,7 +67,7 @@ window.onload = function() {
         render: function() {
             var toggleTodo = this.toggleTodo;
             return e('div', null,
-                e('input', {value:this.state.editing, onChange: this.handleInput}),
+                e('input', {value:this.state.editing, onChange: this.handleInput, onKeyDown: this.handleKeyDown}),
                 e('a', {href: '#' ,onClick: this.addTodo}, '+ Add'),
                 e('ul', null,
                     this.state.todos.map(function(todo){
