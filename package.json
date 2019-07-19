@@ -1,0 +1,15 @@
+{
+  "name": "reduxTodo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:HousewifeHacker/staticReactTodoAWS.git",
+  "author": "housewifehacker <housewifehacker@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^4.36.1",
+    "webpack-cli": "^3.3.6"
+  },
+  "scripts": {
+      "build": "webpack --mode production"
+  }
+}
